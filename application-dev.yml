@@ -1,0 +1,15 @@
+profile:
+    name: dev
+test:
+    data:
+        int: 123
+        string: testValue
+        url: http://127.0.0.1:8080/test
+        path: /etc/hosts
+        float: 3.6
+        boolean: true
+        emptyString:
+    array:
+        - value1
+        - value2
+        - value3
