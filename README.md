@@ -1,4 +1,5 @@
 # Golang profile service 
+[![Build Status](https://travis-ci.org/lvornholt/go-profiles.svg?branch=master)](https://travis-ci.org/lvornholt/go-profiles)  
 This projects wants to supports other projects with profiles, to use the same code on different environsments just be setting a PROFILE environment varibale. Inspired by java spring profiles. This makes it easier to set up the service without define several environment variables on every system. 
 
 ## Different profiles
