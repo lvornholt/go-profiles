@@ -16,6 +16,9 @@ var data []byte
 var yData *syaml.Yaml
 var logLevel = log.InfoLevel
 
+// Logger instances
+var Logger = log.New()
+
 func init() {
 	loadProfile()
 }
@@ -43,18 +46,18 @@ func SetLogLevel(level string) {
 
 func loadProfile() {
 
-	log.SetLevel(logLevel)
+	Logger.SetLevel(logLevel)
 
 	if envConfigFolderPath := os.Getenv("CONFIG_FOLDER_PATH"); len(envConfigFolderPath) > 0 {
 		configFolderPath = envConfigFolderPath
-		log.WithField("configPath", configFolderPath).Info("ProfileService: ConfigFolderPath set by enironment variable to")
+		Logger.WithField("configPath", configFolderPath).Info("ProfileService: ConfigFolderPath set by enironment variable to")
 	}
 
 	if envProfile := os.Getenv("PROFILE"); len(envProfile) > 0 {
 		profile = envProfile
-		log.WithField("profile", profile).Info("ProfileService: started with profile")
+		Logger.WithField("profile", profile).Info("ProfileService: started with profile")
 	} else {
-		log.Info("ProfileService: env variable PROFILE not set - application started with default profile")
+		Logger.Info("ProfileService: env variable PROFILE not set - application started with default profile")
 	}
 
 	var profileFileName string
@@ -62,18 +65,18 @@ func loadProfile() {
 		profileFileName = "application-" + profile + ".yml"
 	} else {
 		profileFileName = "application.yml"
-		log.Info("ProfileService: Fallback to default profile file")
+		Logger.Info("ProfileService: Fallback to default profile file")
 	}
 
 	var err error
 	data, err = ioutil.ReadFile(configFolderPath + profileFileName)
 	if err != nil {
-		log.WithError(err).WithFields(log.Fields{"profile": profile}).Error("ProfileService: application file for profile not found")
+		Logger.WithError(err).WithFields(log.Fields{"profile": profile}).Error("ProfileService: application file for profile not found")
 	}
 
 	yData, err = syaml.NewYaml(data)
 	if err != nil {
-		log.WithError(err).Error("ProfileService: could not parse profile yaml file")
+		Logger.WithError(err).Error("ProfileService: could not parse profile yaml file")
 	}
 
 }
@@ -95,7 +98,7 @@ func GetValueWithDefault(path string, defaultValue interface{}) interface{} {
 		result = v
 	}
 	if err != nil {
-		log.WithError(err).Debug("could not find value for path " + path)
+		Logger.WithError(err).Debug("could not find value for path " + path)
 		return defaultValue
 	}
 	return result
@@ -106,7 +109,7 @@ func GetValueWithDefault(path string, defaultValue interface{}) interface{} {
 func GetIntValue(path string) int {
 	result, err := getValue(path).Int()
 	if err != nil {
-		log.WithError(err).Debug("problem to extract value for path: " + path)
+		Logger.WithError(err).Debug("problem to extract value for path: " + path)
 		return 0
 	}
 	return result
@@ -117,7 +120,7 @@ func GetIntValue(path string) int {
 func GetStringValue(path string) string {
 	result, err := getValue(path).String()
 	if err != nil {
-		log.WithError(err).Debug("problem to extract value for path: " + path)
+		Logger.WithError(err).Debug("problem to extract value for path: " + path)
 		return ""
 	}
 	return result
@@ -128,7 +131,7 @@ func GetStringValue(path string) string {
 func GetArrayValues(path string) []interface{} {
 	result, err := getValue(path).Array()
 	if err != nil {
-		log.WithError(err).Debug("problem to extract value for path: " + path)
+		Logger.WithError(err).Debug("problem to extract value for path: " + path)
 		var emptyArray []interface{}
 		return emptyArray
 	}
@@ -140,7 +143,7 @@ func GetArrayValues(path string) []interface{} {
 func GetFloatValue(path string) float64 {
 	result, err := getValue(path).Float()
 	if err != nil {
-		log.WithError(err).Debug("problem to extract value for path: " + path)
+		Logger.WithError(err).Debug("problem to extract value for path: " + path)
 		return 0.0
 	}
 	return result
@@ -151,7 +154,7 @@ func GetFloatValue(path string) float64 {
 func GetBooleanValue(path string) bool {
 	result, err := getValue(path).Bool()
 	if err != nil {
-		log.WithError(err).Debug("problem to extract value for path: " + path)
+		Logger.WithError(err).Debug("problem to extract value for path: " + path)
 		return false
 	}
 	return result
